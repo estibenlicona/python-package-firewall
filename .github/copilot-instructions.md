@@ -1,4 +1,4 @@
-# Copilot Instructions — deps-proxy
+# Copilot Instructions — python-package-firewall
 
 ## Project Purpose
 Python Package Firewall implementing PEP 503/691 proxy for PyPI with license validation, vulnerability scanning, and maintenance checks.

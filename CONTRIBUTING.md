@@ -1,4 +1,4 @@
-# Contribuir a deps-proxy
+# Contribuir a python-package-firewall
 
 Por favor, sigue estas reglas antes de enviar un PR:
 

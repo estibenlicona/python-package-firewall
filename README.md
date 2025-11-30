@@ -1,4 +1,4 @@
-# deps-proxy
+# python-package-firewall
 
 🛡️ **Python Package Firewall** - Proxy transparente para PyPI con validación de seguridad (PEP 503/691 compatible).
 
@@ -11,8 +11,8 @@ Bloquea automáticamente paquetes con:
 
 ```bash
 # Clonar repositorio
-git clone <repo-url>
-cd deps-proxy
+git clone https://github.com/estibenlicona/python-package-firewall.git
+cd python-package-firewall
 
 # Crear entorno virtual
 python -m venv .venv
