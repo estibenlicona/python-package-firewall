@@ -112,10 +112,45 @@ class PyPIProxyService:
                     if reason_msg not in self.block_reasons[package_name]:
                         self.block_reasons[package_name].append(reason_msg)
                     
-                    logger.warning(f"BLOCKED: {package_name} {version} - {decision.reason}")
+                    # Log visual detallado en servidor
+                    logger.error(f"""
+{'='*80}
+🚫 PACKAGE BLOCKED BY SECURITY POLICY
+{'='*80}
+Package: {package_name}
+Version: {version}
+Reason:  {decision.reason}
+Details: {settings.proxy_base_url.replace('/pypi/packages', '')}/blocked/{package_name}
+{'='*80}
+                    """)
+                    
+                    # Formatear mensaje de error detallado para el cliente
+                    error_message = f"""
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🚫 PACKAGE BLOCKED BY SECURITY POLICY                                       ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Package: {package_name:<67} ║
+║ Version: {version:<67} ║
+║                                                                              ║
+║ Reason:                                                                      ║
+║ {decision.reason[:70]:<70} ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ For full details, run:                                                       ║
+║   curl {settings.proxy_base_url.replace('/pypi/packages', '')}/blocked/{package_name:<44} ║
+║                                                                              ║
+║ Or check firewall logs on your proxy server                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+                    """.strip()
+                    
                     raise HTTPException(
                         status_code=403,
-                        detail=f"Package '{package_name}' version {version} blocked by firewall policy.\n\nReason: {decision.reason}\n\nCheck /blocked/{package_name} for details."
+                        detail=error_message,
+                        headers={
+                            "X-Block-Reason": decision.reason[:200],
+                            "X-Policy-Violation": "true",
+                            "X-Blocked-Package": package_name,
+                            "X-Blocked-Version": version
+                        }
                     )
                 
                 logger.info(f"ALLOWED: {package_name} {version} - {decision.reason}")
